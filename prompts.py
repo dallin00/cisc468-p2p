@@ -8,7 +8,6 @@ from io import StringIO
 import datetime
 from zeroconf_config import *
 
-## gotta do this one
 def prompt_user_new_cert():
     """
     Asks the user for their name & generates a new X509 certificate
