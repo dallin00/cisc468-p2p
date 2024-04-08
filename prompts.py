@@ -29,7 +29,7 @@ def prompt_create_listener():
     Asks the user for their name & encryption password.
     Then calls createListener to create a new TLS listener.
     """
-    '''
+
     line_reader = StringIO(input("Path to cert file: "))
     cert_path = line_reader.readline().strip()
 
@@ -46,10 +46,6 @@ def prompt_create_listener():
 
     line_reader = StringIO(input("Enter encryption password: "))
     password = line_reader.readline().strip()
-    '''
-    cert_path = "py.crt"
-    key_path = "py.key"
-    password = "123"
 
     try:
         create_listener(cert_path, key_path, password)
@@ -62,7 +58,7 @@ def prompt_create_sender():
     Asks the user for their name & a destination.
     Then creates a connection to the receiver & allows the user to send information.
     """
-    '''
+
     # Get path to user's certificate
     line_reader = StringIO(input("Path to cert file: "))
     cert_path = line_reader.readline().strip()
@@ -81,15 +77,10 @@ def prompt_create_sender():
 
     # List all TLS services running on the local network
     list_zeroconf_services()
-    
 
     # Get address of receiver without newline characters
     line_reader = StringIO(input("Enter destination: "))
     destination = line_reader.readline().strip()
-    '''
-    cert_path = "py.crt"
-    key_path = "py.key"
-    destination = "127.0.0.1"
 
     # Get a TLS connection to the receiver
     try:
