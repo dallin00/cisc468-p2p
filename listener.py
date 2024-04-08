@@ -6,7 +6,9 @@ from encryption import *
 from certificates import create_tls_config
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 from zeroconf_config import *
+import base64
 
 def handle_new_client(connection, peer_name, password):
     """
@@ -50,10 +52,11 @@ def handle_new_client(connection, peer_name, password):
             except Exception as e:
                     raise Exception(f"could not load JSON object: {e}")
 
-            if 'certificate' in message:
+            if message['certificate']:
                 # Convert new certificate to PEM block
                 try:
-                    cert = x509.load_pem_x509_certificate(message['certificate'].encode(), default_backend())
+                    message_cert = base64.b64decode(message['certificate'])
+                    cert = x509.load_pem_x509_certificate(message_cert)
                 except Exception as e:
                     raise Exception(f"could not load certificate: {e}")
 
@@ -64,20 +67,21 @@ def handle_new_client(connection, peer_name, password):
                 # Handle certificate revocation
                 try:
                     with open(f"./certs/{peer_name}.crt", "wb") as f:
-                        f.write(message['certificate'].encode())
+                        cert_pem = cert.public_bytes(serialization.Encoding.PEM)
+                        f.write(cert_pem)
                 except Exception as e:
                     raise Exception(f"could not write new certificate to file: {e}")
 
                 print(f"{peer_name} sent new certificate: {peer_name}.crt")
                 print("Please restart your application to configure the new certificate")
 
-            elif "file" in message:
+            elif message['file']:
                 # Append message to stored messages
                 messages.append(f"{peer_name}: {message['text']}")
                 # Handle sending of files
                 try:
                     with open(f"copy_{message['text']}", "wb") as f:
-                        f.write(message['file'].encode())
+                        f.write(base64.b64decode(message['file']))
                 except Exception as e:
                     raise Exception(f"could not save file: {e}")
                 print(f"{peer_name}: Sent file called {message['text']}")

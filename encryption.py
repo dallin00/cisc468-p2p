@@ -1,10 +1,10 @@
 import os
 import base64
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+import argon2
 
 
 def create_gcm(password):
@@ -16,19 +16,11 @@ def create_gcm(password):
       - password: string of the user's encryption password.
 
     Returns:
-      - cipher.AEAD object for encrypting & decrypting file
-      - error if any occurred during execution
+      - AESGCM object for encrypting & decrypting file
     '''
     # Get key from password for encryption/decryption
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA512(),
-        length=32,
-        salt=b'',
-        iterations=4096,
-        backend=default_backend()
-    )
+    key = argon2.low_level.hash_secret_raw(password.encode("utf-8"), salt=b"somesalt", time_cost=1, memory_cost=8, parallelism=1, hash_len=32, type=argon2.low_level.Type.D)
 
-    key = kdf.derive(password)
     # Create implementation of AES256 using key
     try:
         gcm = AESGCM(key)
@@ -36,6 +28,7 @@ def create_gcm(password):
         return e
 
     return gcm
+
 
 
 def encrypt_string(gcm, text):
@@ -85,7 +78,6 @@ def decrypt_bytes(gcm, ciphertext):
     # Decrypt the ciphertext and validate the nonce
     try:
         plaintext = gcm.decrypt(nonce, encrypted_data, None)
-        #print("plaintext:", plaintext)
     except Exception as e:
         print(f"decrypt_bytes: {e}")
         return e
@@ -108,7 +100,7 @@ def encrypt_messages(password, filename, messages):
     joined_messages = "\n".join(messages)
 
     # Create the AES256-GCM object based on the supplied password
-    gcm = create_gcm(password.encode())
+    gcm = create_gcm(password)
 
     # Encrypt the joined messages
     ciphertext = encrypt_string(gcm, joined_messages)
@@ -121,7 +113,7 @@ def encrypt_messages(password, filename, messages):
 def decrypt_file(password, filename):
     try:
         # Create AES256-GCM object passed on supplied password
-        gcm = create_gcm(password.encode())
+        gcm = create_gcm(password)
 
         # Read ciphertext from file
         with open(filename, 'rb') as file:
