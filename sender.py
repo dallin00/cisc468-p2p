@@ -26,7 +26,7 @@ def handle_send_message(connection, messages):
 
     # Convert message into JSON object
     try:
-        json_data = json.dumps({"text": message}).encode()
+        json_data = json.dumps({"text": message, "file": None, "certificate": None}).encode()
     except Exception as e:
         raise Exception(f"Failed to create message: {e}")
 
@@ -75,7 +75,7 @@ def handle_send_file(connection, messages):
 
     # Convert file data into JSON object
     try:
-        json_data = json.dumps({"text": os.path.basename(path), "file": file_data.decode()})
+        json_data = json.dumps({"text": os.path.basename(path), "file": base64.b64encode(file_data).decode(), "certificate": None})
     except Exception as e:
         raise Exception(f"Failed to create message: {e}")
 
@@ -118,7 +118,7 @@ def handle_send_revoked_cert(connection):
 
     # Convert certificate file into JSON object
     try:
-        json_data = json.dumps({"certificate": certificate.decode()})
+        json_data = json.dumps({"text": None, "file": None, "certificate": base64.b64encode(certificate).decode()})
     except Exception as e:
         raise Exception(f"Failed to create message: {e}")
 

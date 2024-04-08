@@ -1,0 +1,4 @@
+pyOpenSSL==22.1.0
+zeroconf==0.131.0
+cryptography==38.0.3
+argon2-cffi==23.1.0

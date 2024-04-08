@@ -11,6 +11,8 @@ import OpenSSL.crypto
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from zeroconf_config import *
+import base64
+from io import StringIO
 
 def create_nonce():
     start = 100000
@@ -69,9 +71,9 @@ def handle_receive_nonce_cert(connection, nonce):
         except Exception as e:
             raise Exception(f"could not load JSON object: {e}")
 
-        if 'certificate' in message:
+        if message['certificate']:
             # Handle certificate
-            peer = message['certificate'].encode()
+            peer = base64.b64decode(message['certificate'])
             passed_nonce = int(message['text'])
         else:
             raise Exception(f"Failed to recieve cert")
@@ -98,13 +100,14 @@ def handle_send_nonce_cert(connection, cert_path):
 
     Parameters:
       - connection: socket-like object to another client
-      - line_reader: file-like object for reading entire lines
+      - cert_path: path to cert file
 
     Raises:
         Exception: If any error occurs during execution.
     """
 
-    client_nonce = int(input("Enter other client's nonce: "))
+    line_reader = StringIO(input("Enter other client's nonce: "))
+    client_nonce  = line_reader.readline().strip()
 
     # Read certificate file
     try:
@@ -116,7 +119,7 @@ def handle_send_nonce_cert(connection, cert_path):
 
     # Convert certificate file into JSON object
     try:
-        json_data = json.dumps({"text": client_nonce, "certificate": certificate.decode()})
+        json_data = json.dumps({"text": client_nonce, "file": None, "certificate": base64.b64encode(certificate).decode()})
     except Exception as e:
         raise Exception(f"Failed to create message: {e}")
 

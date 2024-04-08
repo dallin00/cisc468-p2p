@@ -1,8 +1,14 @@
 from io import StringIO
 from prompts import *
+import os
 
 
 def main():
+
+    if not os.path.exists("./certs/" ):
+        os.mkdir("./certs")
+    if not os.path.exists("./hist" ):
+        os.mkdir("./hist")
     
     print("1. Create new certificate\n"
           "2. Listen\n"
