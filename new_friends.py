@@ -1,18 +1,15 @@
 import random
 import os
-from certificates import create_tls_config
-from cryptography.hazmat.primitives import serialization
-from cryptography import x509
 import socket
-import ssl
 import json
 import struct
-import OpenSSL.crypto
+import base64
+from cryptography.hazmat.primitives import serialization
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from zeroconf_config import *
-import base64
-from io import StringIO
+from certificates import create_tls_config
+
 
 def create_nonce():
     start = 100000
@@ -106,8 +103,7 @@ def handle_send_nonce_cert(connection, cert_path):
         Exception: If any error occurs during execution.
     """
 
-    line_reader = StringIO(input("Enter other client's nonce: "))
-    client_nonce  = line_reader.readline().strip()
+    client_nonce  = input("Enter other client's nonce: ")
 
     # Read certificate file
     try:

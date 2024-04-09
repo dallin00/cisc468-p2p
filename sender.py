@@ -1,7 +1,6 @@
 import os
 import json
 import struct
-from io import StringIO
 import socket
 from encryption import *
 from certificates import create_tls_config
@@ -13,12 +12,10 @@ def handle_send_message(connection, messages):
 
     Parameters:
       - connection: socket.socket to another client
-      - line_reader: io.TextIOBase for reading entire lines
       - messages: list of previously sent messages
     """
     # Get message to send
-    line_reader = StringIO(input("Enter message: "))
-    message = line_reader.readline().strip()
+    message = input("Enter message: ")
 
     # Check if user wants to quit
     if message.lower() == "/quit":
@@ -53,12 +50,10 @@ def handle_send_file(connection, messages):
 
     Parameters:
       - connection: socket-like object for communicating with another client
-      - line_reader: file-like object for reading entire lines
       - messages: list of previously sent messages
     """
     # Get path to file for sending
-    line_reader = StringIO(input("Enter file path: "))
-    path = line_reader.readline().strip()
+    path = input("Enter file path: ")
 
     # Check that file exists
     try:
@@ -103,11 +98,9 @@ def handle_send_revoked_cert(connection):
 
     Parameters:
       - connection: socket-like object to another client
-      - line_reader: file-like object for reading entire lines
     """
     # Get path to newly generated certificate
-    line_reader = StringIO(input("New cert path: "))
-    new_cert_path = line_reader.readline().strip()
+    new_cert_path = input("New cert path: ")
 
     # Read certificate file
     try:

@@ -1,8 +1,6 @@
 import os
 import base64
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 import argon2
 
@@ -10,7 +8,7 @@ import argon2
 def create_gcm(password):
     '''
     Creates AES256-GCM encoder passed off of the password provided.
-    The encryption key is generated from pbkdf2 using the supplied password.
+    The encryption key is generated from argon2 using the supplied password.
 
     Parameters:
       - password: string of the user's encryption password.

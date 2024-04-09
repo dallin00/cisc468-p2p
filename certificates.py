@@ -1,20 +1,13 @@
 import os
-import random
 import socket
 import ipaddress
 import ssl
 import datetime
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.hkdf import HKDF
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography import x509
 from cryptography.x509.oid import NameOID
-from cryptography.hazmat.primitives import serialization
-
 
 
 def create_private_key(name):
@@ -29,7 +22,7 @@ def create_private_key(name):
     """
     try:
         # Generate new private key based on the elliptic curve P384
-        key = ec.generate_private_key(ec.SECP384R1(), default_backend())
+        key = ec.generate_private_key(ec.SECP384R1())
         key_bytes = key.private_bytes(Encoding.PEM, PrivateFormat.TraditionalOpenSSL, NoEncryption())
 
         # Create key file
@@ -104,14 +97,16 @@ def create_self_certificate(name):
         template = template.public_key(key.public_key())
 
         # Create new certificate based on template & new key
-        new_cert = template.sign(key, hashes.SHA256(), default_backend())
+        new_cert = template.sign(key, hashes.SHA256())
         
         # Create PEM block for new certificate
-        cert_pem = new_cert.public_bytes(serialization.Encoding.PEM)
+        cert_pem = new_cert.public_bytes(Encoding.PEM)
 
         # Create key certificate file
         with open(name + ".crt", "wb") as cert_file:
             cert_file.write(cert_pem)
+
+        print("Certificate created successfully")
 
     except Exception as e:
         raise Exception(f"Error creating certificate: {e}")
