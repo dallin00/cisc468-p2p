@@ -2,13 +2,13 @@ import os
 import json
 import datetime
 import socket
+import base64
 from encryption import *
+from zeroconf_config import *
 from certificates import create_tls_config
 from cryptography import x509
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
-from zeroconf_config import *
-import base64
+
 
 def handle_new_client(connection, peer_name, password):
     """

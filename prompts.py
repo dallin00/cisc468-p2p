@@ -4,7 +4,6 @@ from sender import *
 from encryption import *
 from certificates import *
 from new_friends import *
-from io import StringIO
 import datetime
 from zeroconf_config import *
 
@@ -14,8 +13,7 @@ def prompt_user_new_cert():
     based on their name.
     """
     # Get name of client without newline characters
-    line_reader = StringIO(input("Enter name: "))
-    name = line_reader.readline().strip()
+    name = input("Enter name: ")
 
     # Create new self-signed certificate based on name
     try:
@@ -30,22 +28,19 @@ def prompt_create_listener():
     Then calls createListener to create a new TLS listener.
     """
 
-    line_reader = StringIO(input("Path to cert file: "))
-    cert_path = line_reader.readline().strip()
+    cert_path = input("Path to cert file: ")
 
     if not os.path.exists(cert_path):
         print(f"prompt_create_listener: {cert_path} does not exist")
         return
 
-    line_reader = StringIO(input("Path to key file: "))
-    key_path = line_reader.readline().strip()
+    key_path = input("Path to key file: ")
 
     if not os.path.exists(key_path):
         print(f"prompt_create_listener: {key_path} does not exist")
         return
 
-    line_reader = StringIO(input("Enter encryption password: "))
-    password = line_reader.readline().strip()
+    password = input("Enter encryption password: ")
 
     try:
         create_listener(cert_path, key_path, password)
@@ -60,16 +55,14 @@ def prompt_create_sender():
     """
 
     # Get path to user's certificate
-    line_reader = StringIO(input("Path to cert file: "))
-    cert_path = line_reader.readline().strip()
+    cert_path = input("Path to cert file: ")
 
     if not os.path.exists(cert_path):
         print(f"prompt_create_sender: {cert_path} does not exist")
         return
 
     # Get path to user's key
-    line_reader = StringIO(input("Path to key file: "))
-    key_path = line_reader.readline().strip()
+    key_path = input("Path to key file: ")
 
     if not os.path.exists(key_path):
         print(f"prompt_create_sender: {key_path} does not exist")
@@ -79,8 +72,7 @@ def prompt_create_sender():
     list_zeroconf_services()
 
     # Get address of receiver without newline characters
-    line_reader = StringIO(input("Enter destination: "))
-    destination = line_reader.readline().strip()
+    destination = input("Enter destination: ")
 
     # Get a TLS connection to the receiver
     try:
@@ -94,9 +86,7 @@ def prompt_create_sender():
     # Endlessly loop until user enters /quit
     while True:
         # Print sending options to the user & ask which mode they want
-        line_reader = StringIO(input("\n1. Send message\n2. Send file\n3. Quit\nEnter mode: "))
-
-        mode = line_reader.readline().strip()
+        mode = input("\n1. Send message\n2. Send file\n3. Quit\nEnter mode: ")
 
         try:
             if mode == "1":
@@ -108,8 +98,7 @@ def prompt_create_sender():
             elif mode == "3":
                 # Quit program
                 # Get encryption password
-                line_reader = StringIO(input("Enter encryption password: "))
-                password = line_reader.readline().strip()
+                password = input("Enter encryption password: ")
                 # Encrypt sent files
                 encrypt_messages(password, f"sent_{str(datetime.datetime.now())}", messages)
                 return
@@ -122,16 +111,14 @@ def prompt_create_sender():
 
 def prompt_revoke_certificate():
     # Get path to user's certificate
-    line_reader = StringIO(input("Path to old cert file: "))
-    cert_path = line_reader.readline().strip()
+    cert_path = input("Path to old cert file: ")
 
     if not os.path.exists(cert_path):
         print(f"prompt_revoke_certificate: {cert_path} does not exist")
         return
 
     # Get path to user's key
-    line_reader = StringIO(input("Path to old key file: "))
-    key_path = line_reader.readline().strip()
+    key_path = input("Path to old key file: ")
 
     if not os.path.exists(key_path):
         print(f"prompt_revoke_certificate: {key_path} does not exist")
@@ -141,8 +128,7 @@ def prompt_revoke_certificate():
     list_zeroconf_services()
 
     # Get address of receiver without newline characters
-    line_reader = StringIO(input("Enter destination: "))
-    destination = line_reader.readline().strip()
+    destination = input("Enter destination: ")
 
     try:
         connection = create_sender(cert_path, key_path, destination)
@@ -160,8 +146,7 @@ def prompt_revoke_certificate():
 
 def prompt_read_past_messages():
     # Get encryption password without newline characters
-    line_reader = StringIO(input("Enter encryption password: "))
-    password = line_reader.readline().strip()
+    password = input("Enter encryption password: ")
 
     # Read passed session files in the hist directory
     try:
@@ -175,8 +160,7 @@ def prompt_read_past_messages():
         print(f"{i+1}. {file}")
 
     # Get session file number from the user
-    line_reader = StringIO(input("Enter file #: "))
-    file_number = int(line_reader.readline().strip())
+    file_number = int(input("Enter file #: "))
 
     # Validate file number is within range
     if file_number < 1 or file_number > len(files):
@@ -194,16 +178,14 @@ def prompt_read_past_messages():
 
 def prompt_accept_new_friends():
     # Get path to user's certificate
-    line_reader = StringIO(input("Path to cert file: "))
-    cert_path = line_reader.readline().strip()
+    cert_path = input("Path to cert file: ")
 
     if not os.path.exists(cert_path):
         print(f"prompt_accept_new_friends: {cert_path} does not exist")
         return
 
     # Get path to user's key
-    line_reader = StringIO(input("Path to key file: "))
-    key_path = line_reader.readline().strip()
+    key_path = input("Path to key file: ")
 
     if not os.path.exists(key_path):
         print(f"prompt_accept_new_friends: {key_path} does not exist")
@@ -227,16 +209,14 @@ def prompt_send_new_friend():
     Both parties must verify with a nonce.
     """
     # Get path to user's certificate
-    line_reader = StringIO(input("Path to cert file: "))
-    cert_path = line_reader.readline().strip()
+    cert_path = input("Path to cert file: ")
 
     if not os.path.exists(cert_path):
         print(f"prompt_send_new_friend: {cert_path} does not exist")
         return
 
     # Get path to user's key
-    line_reader = StringIO(input("Path to key file: "))
-    key_path = line_reader.readline().strip()
+    key_path = input("Path to key file: ")
 
     if not os.path.exists(key_path):
         print(f"prompt_send_new_friend: {key_path} does not exist")
@@ -250,8 +230,7 @@ def prompt_send_new_friend():
     list_zeroconf_services()
 
     # Get address of receiver without newline characters
-    line_reader = StringIO(input("Enter destination: "))
-    destination = line_reader.readline().strip()
+    destination = input("Enter destination: ")
 
     # Create a sender to connect to new friend
     try:

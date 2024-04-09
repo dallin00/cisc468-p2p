@@ -1,4 +1,3 @@
-from io import StringIO
 from prompts import *
 import os
 
@@ -18,8 +17,7 @@ def main():
           "6. Accept new friends\n"
           "7. Send new friend request\n")
 
-    line_reader = StringIO(input("Enter mode: "))
-    mode = line_reader.readline().strip()
+    mode = input("Enter mode: ")
 
     if mode == "1":
         prompt_user_new_cert()
